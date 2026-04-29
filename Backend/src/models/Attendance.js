@@ -5,15 +5,27 @@ const AttendanceSchema = new mongoose.Schema({
     employeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, required: true },
     punchIn: { type: Date },
-    punchInLocation: { type: String },
+    punchInLocation: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     punchInPhoto: { type: String },
     punchOut: { type: Date },
-    punchOutLocation: { type: String },
+    punchOutLocation: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     punchOutPhoto: { type: String },
     lunchInTime: { type: Date },
-    lunchInLocation: { type: String },
+    lunchInLocation: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     lunchOutTime: { type: Date },
-    lunchOutLocation: { type: String },
+    lunchOutLocation: {
+        lat: { type: Number },
+        lng: { type: Number }
+    },
     status: { 
         type: String, 
         enum: ['present', 'absent', 'half-day', 'late'], 
