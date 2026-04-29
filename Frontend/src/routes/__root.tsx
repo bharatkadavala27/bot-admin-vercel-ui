@@ -1,0 +1,94 @@
+import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SplashScreen } from "@/components/shared/splash-screen";
+
+import appCss from "../styles.css?url";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      enabled: typeof window !== "undefined",
+    },
+  },
+});
+
+function NotFoundComponent() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-7xl font-bold text-gradient-primary">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div className="mt-6">
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md bg-gradient-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-elegant hover:opacity-90"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" },
+      { title: "Be On Time" },
+      { name: "description", content: "B.O.T HRMS Admin Panel — manage employees, attendance, salary and more." },
+      { name: "author", content: "B.O.T" },
+      { name: "theme-color", content: "#ffffff" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "B.O.T Admin" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { property: "og:title", content: "B.O.T — HRMS Admin" },
+      { property: "og:description", content: "Premium HRMS dashboard for the B.O.T workforce." },
+      { property: "og:type", content: "website" },
+    ],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", href: "/favicon.ico" },
+      { rel: "manifest", href: "/manifest.json" },
+    ],
+  }),
+  shellComponent: RootShell,
+  component: RootComponent,
+  notFoundComponent: NotFoundComponent,
+});
+
+function RootShell({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider delayDuration={150}>
+        <SplashScreen />
+        <Outlet />
+        <Toaster richColors position="top-right" />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
