@@ -12,8 +12,8 @@ export interface AttendanceRecord {
   date: string;
   punchIn?: string;
   punchOut?: string;
-  punchInLocation?: string;
-  punchOutLocation?: string;
+  punchInLocation?: string | { lat: number; lng: number };
+  punchOutLocation?: string | { lat: number; lng: number };
   status: 'present' | 'absent' | 'half-day' | 'late';
   remarks?: string;
 }

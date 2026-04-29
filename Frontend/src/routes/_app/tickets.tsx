@@ -181,7 +181,10 @@ function TicketsPage() {
                 </div>
 
                 <div className="text-[11px] text-muted-foreground mb-4 line-clamp-1 italic px-1">
-                  <MapPin className="h-2.5 w-2.5 inline mr-1" /> {t.punchInLocation || "No location data"}
+                  <MapPin className="h-2.5 w-2.5 inline mr-1" /> 
+                  {typeof t.punchInLocation === 'object' 
+                    ? `${t.punchInLocation.lat.toFixed(4)}, ${t.punchInLocation.lng.toFixed(4)}` 
+                    : (t.punchInLocation || "No location data")}
                 </div>
 
                 <div className="pt-3 border-t border-border/40 flex items-center justify-end gap-1">
@@ -245,7 +248,9 @@ function TicketsPage() {
                     {t.punchOut ? new Date(t.punchOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "—"}
                   </DataTableCell>
                   <DataTableCell className="text-[12px] text-muted-foreground max-w-[150px] truncate italic">
-                    {t.punchInLocation || "N/A"}
+                    {typeof t.punchInLocation === 'object' 
+                      ? `${t.punchInLocation.lat.toFixed(2)}, ${t.punchInLocation.lng.toFixed(2)}` 
+                      : (t.punchInLocation || "N/A")}
                   </DataTableCell>
                   <DataTableCell>
                     <Badge
