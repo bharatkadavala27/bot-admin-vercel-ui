@@ -1,14 +1,10 @@
 const express = require("express");
-const dotenv = require("dotenv");
 const dns = require("node:dns");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const cors = require("cors");
 const connectDB = require("./src/config/db");
 const { notFound, errorHandler } = require("./src/middleware/error.middleware");
-
-// Load env vars
-dotenv.config();
 
 // Connect to Database
 connectDB();
