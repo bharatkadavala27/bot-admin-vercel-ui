@@ -43,6 +43,36 @@ app.use("/api/announcements", require("./src/routes/announcement_routes"));
 app.use("/api/leads", require("./src/routes/lead_routes"));
 
 
+
+// Temporary Seed Route (Delete after use)
+app.get("/api/seed-admin", async (req, res) => {
+    try {
+        const User = require('./src/models/User');
+        const phone = '1234567890';
+        const otp = '123456';
+        
+        let user = await User.findOne({ phone });
+        if (user) {
+            user.otp = otp;
+            user.role = 'admin';
+            user.companyName = 'B.O.T Admin';
+            await user.save();
+        } else {
+            await User.create({
+                name: 'Admin User',
+                phone: phone,
+                role: 'admin',
+                companyName: 'B.O.T Admin',
+                otp: otp,
+                status: 'active'
+            });
+        }
+        res.json({ message: "Admin seeded successfully!", phone, otp });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Base route
 app.get("/", (req, res) => {
     res.send("HRMS API is running...");
