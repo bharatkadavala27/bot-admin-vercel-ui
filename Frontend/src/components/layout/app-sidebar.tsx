@@ -93,8 +93,12 @@ export function AppSidebar({
           <Link to="/dashboard" className="flex items-center gap-2.5 flex-1" onClick={onClose}>
             <img src={logo} alt="BE ON TIME" className="h-8 w-8 rounded-lg object-cover" />
             <div className="leading-tight">
-              <div className="font-semibold text-[13px] tracking-tight text-foreground uppercase truncate">{"BE ON TIME"}</div>
-              <div className="text-[10px] text-muted-foreground font-medium tracking-wide">HRMS Platform</div>
+              <div className="font-bold text-[15px] tracking-[0.02em] text-foreground uppercase truncate">
+                BE ON TIME
+              </div>
+              <div className="text-[10px] text-muted-foreground font-semibold tracking-[0.05em] uppercase">
+                HRMS Platform
+              </div>
             </div>
           </Link>
           <button

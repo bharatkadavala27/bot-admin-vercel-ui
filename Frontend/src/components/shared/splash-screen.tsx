@@ -68,7 +68,7 @@ export function SplashScreen() {
               />
 
               {/* Main Logo Container */}
-              <div className="relative h-32 w-32 flex items-center justify-center bg-white dark:bg-card rounded-3xl shadow-glow border border-primary/10 overflow-hidden">
+              <div className="relative h-32 w-32 flex items-center justify-center bg-transparent rounded-3xl overflow-hidden">
                 <motion.div
                   animate={{ 
                     y: [0, -5, 0],
@@ -79,11 +79,13 @@ export function SplashScreen() {
                     ease: "easeInOut" 
                   }}
                 >
-                  <img src={logo} alt="BOT Logo" className="h-24 w-24 object-contain" />
+                  <img
+                    src={logo}
+                    alt="BOT Logo"
+                    className="h-24 w-24 object-contain"
+                    style={{ mixBlendMode: "multiply" }}
+                  />
                 </motion.div>
-                
-                {/* Shimmer effect on logo container */}
-                <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] animate-shimmer" />
               </div>
             </motion.div>
 
@@ -136,4 +138,3 @@ export function SplashScreen() {
     </AnimatePresence>
   );
 }
-
