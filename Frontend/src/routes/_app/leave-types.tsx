@@ -14,7 +14,7 @@ import { useLeaveTypeService, type LeaveType as BackendLeaveType } from "@/servi
 import { ViewToggle } from "@/components/shared/view-toggle";
 import { DataTable, DataTableCell, DataTableRow } from "@/components/shared/data-table";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
@@ -116,28 +116,15 @@ function LeaveTypesPage() {
       />
 
       {(isLoading || (types.length === 0 && isFetching)) ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="p-5 border border-border/60 bg-white rounded-xl shadow-sm h-48 space-y-4">
-              <div className="flex justify-between">
-                <Skeleton className="h-12 w-12 rounded-xl" />
-                <div className="flex gap-2">
-                  <Skeleton className="h-8 w-8 rounded-lg" />
-                  <Skeleton className="h-8 w-8 rounded-lg" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-              </div>
-              <Skeleton className="h-8 w-full mt-4" />
-            </Card>
-          ))}
-        </div>
+        <SkeletonLoader type="card" count={8} />
       ) : (
         <>
           {/* Filters Bar */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
+            <div className="flex items-center gap-3">
+              <ViewToggle view={view} onViewChange={setView} />
+            </div>
+
             <FormInput
               placeholder="Search by name or code..."
               icon={Search}
@@ -145,10 +132,6 @@ function LeaveTypesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-
-            <div className="flex items-center gap-3">
-              <ViewToggle view={view} onViewChange={setView} />
-            </div>
           </div>
 
           <AnimatePresence mode="wait">

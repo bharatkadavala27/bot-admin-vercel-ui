@@ -38,7 +38,7 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
 
         {/* Mobile Logo */}
         <div className="flex lg:hidden items-center gap-2">
-          <img src="/favicon.ico" alt="B.O.T" className="h-7 w-7 rounded-lg" />
+          <img src="/favicon.png" alt="B.O.T" className="h-7 w-7 rounded-lg" />
           <span className="font-bold text-[14px] tracking-tight">Be On Time</span>
         </div>
 

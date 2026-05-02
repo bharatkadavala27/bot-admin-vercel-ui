@@ -32,7 +32,7 @@ import { Employee, useEmployeeService, type Employee as BackendEmployee } from "
 import { useDepartmentService } from "@/services/department-service";
 import { useBranchService } from "@/services/branch-service";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/employees/")({
   component: EmployeesPage,
@@ -60,10 +60,14 @@ function EmployeesPage() {
     return list.filter((e) => {
       const matchesSearch =
         !search ||
-        e.name.toLowerCase().includes(search.toLowerCase()) ||
-        (e.email && e.email.toLowerCase().includes(search.toLowerCase())) ||
-        e.phone.includes(search);
-      const matchesDept = deptFilter === "all" || e.departmentId === deptFilter;
+        (e.name || "").toLowerCase().includes(search.toLowerCase()) ||
+        (e.employeeId || "").toString().toLowerCase().includes(search.toLowerCase()) ||
+        (e.email || "").toLowerCase().includes(search.toLowerCase()) ||
+        (e.phone || "").toString().toLowerCase().includes(search.toLowerCase());
+      
+      const empDeptId = typeof e.departmentId === 'string' ? e.departmentId : (e.departmentId as any)?._id;
+      const matchesDept = deptFilter === "all" || empDeptId === deptFilter;
+      
       const matchesStatus = statusFilter === "all" || e.status === statusFilter;
       return matchesSearch && matchesDept && matchesStatus;
     });
@@ -111,14 +115,6 @@ function EmployeesPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search employees..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none bg-background"
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
           
@@ -149,23 +145,19 @@ function EmployeesPage() {
             </Select>
           </div>
         </div>
+
+        <FormInput
+          placeholder="Search employees..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none bg-background"
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+        />
       </div>
 
       <AnimatePresence mode="wait">
         {(isLoading || (list.length === 0 && isFetching)) ? (
-          <motion.div key="loading" className="space-y-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 w-full rounded-xl bg-white border border-border/40 flex items-center px-4 gap-4 animate-pulse">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-1/4" />
-                  <Skeleton className="h-3 w-1/3" />
-                </div>
-                <Skeleton className="h-6 w-24 rounded-lg" />
-                <Skeleton className="h-8 w-24 rounded-xl" />
-              </div>
-            ))}
-          </motion.div>
+          <SkeletonLoader key="loading" type="table" count={PAGE_SIZE} />
         ) : view === "grid" ? (
           <motion.div
             key="grid"

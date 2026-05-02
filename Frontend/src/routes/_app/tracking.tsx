@@ -15,6 +15,7 @@ import { useAttendanceService } from "@/services/attendance-service";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/tracking")({
   component: TrackingPage,
@@ -47,11 +48,34 @@ function TrackingPage() {
   const filtered = employees.filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()));
   const selected = employees.find((e) => e._id === selectedId) ?? filtered[0];
 
+  if (loadingEmployees || loadingLocations) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Employee Tracking" description="Live location and status of field employees." />
+        <SkeletonLoader type="stats" count={3} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-1">
+            <SkeletonLoader type="list" count={8} />
+          </div>
+          <div className="lg:col-span-2">
+            <div className="h-[560px] bg-muted/20 rounded-xl animate-pulse flex items-center justify-center border border-border/40">
+              <MapPin className="h-12 w-12 text-muted-foreground/20" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader title="Employee Tracking" description="Live location and status of field employees." />
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} labels={{ grid: "Map View", list: "List View" }} />
+        </div>
+
         <FormInput
           placeholder="Search employee..."
           icon={Search}
@@ -59,10 +83,6 @@ function TrackingPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} labels={{ grid: "Map View", list: "List View" }} />
-        </div>
       </div>
 
       <AnimatePresence mode="wait">

@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/expenses")({
@@ -120,6 +120,16 @@ function ExpensesPage() {
     return CATEGORIES.find(c => c.value === cat)?.icon || Tag;
   };
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Expense Management" description="Track office expenses and team spending." />
+        <SkeletonLoader type="stats" count={3} />
+        <SkeletonLoader type="card" count={6} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -143,6 +153,10 @@ function ExpensesPage() {
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} />
+        </div>
+
         <FormInput
           placeholder="Search expenses..."
           icon={Search}
@@ -150,10 +164,6 @@ function ExpensesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} />
-        </div>
       </div>
 
       <AnimatePresence mode="wait">

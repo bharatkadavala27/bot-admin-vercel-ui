@@ -18,7 +18,7 @@ import { StatCard } from "@/components/shared/stat-card";
 import { useSalaryService, type SalaryRecord } from "@/services/salary-service";
 import { toast } from "sonner";
 import { cn, formatTime12h } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/_app/salary")({
@@ -98,11 +98,7 @@ function SalaryPage() {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {isLoading ? (
-          <>
-            <Skeleton className="h-28 rounded-2xl" />
-            <Skeleton className="h-28 rounded-2xl" />
-            <Skeleton className="h-28 rounded-2xl" />
-          </>
+          <SkeletonLoader type="stats" count={3} className="col-span-3" />
         ) : (
           <>
             <StatCard label="Total Payroll" value={fmtINR(total)} icon={Wallet} accent="primary" />
@@ -114,14 +110,6 @@ function SalaryPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search employee..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
           
@@ -151,15 +139,19 @@ function SalaryPage() {
             </Select>
           </div>
         </div>
+
+        <FormInput
+          placeholder="Search employee..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <motion.div key="loading" className="space-y-2">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-xl" />
-            ))}
-          </motion.div>
+          <SkeletonLoader key="loading" type="table" count={10} />
         ) : view === "grid" ? (
           <motion.div
             key="grid"

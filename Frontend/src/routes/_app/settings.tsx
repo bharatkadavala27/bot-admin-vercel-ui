@@ -13,6 +13,7 @@ import { setSession, clearSession } from "@/lib/auth";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { Loader2 } from "lucide-react";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/settings")({
   component: SettingsPage,
@@ -35,6 +36,7 @@ function SettingsPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [notif, setNotif] = useState({ email: true, push: true, weekly: false });
   const [company, setCompany] = useState({
     name: "",
@@ -47,11 +49,16 @@ function SettingsPage() {
   useEffect(() => {
     setHasMounted(true);
     const fetchProfile = async () => {
+      setIsProfileLoading(true);
       try {
         const { data } = await apiClient.get("/users/profile");
+        const logoUrl = data.companyLogo 
+          ? (data.companyLogo.startsWith("http") ? data.companyLogo : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${data.companyLogo.startsWith("/") ? "" : "/"}${data.companyLogo}`)
+          : `https://api.dicebear.com/7.x/initials/svg?seed=${data.companyName || "BOT"}`;
+
         setCompany({
           name: data.companyName || "",
-          logo: data.companyLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${data.companyName || "BOT"}`,
+          logo: logoUrl,
           address: data.address || "",
           email: data.email || "",
           phone: data.phone || "",
@@ -61,7 +68,7 @@ function SettingsPage() {
           setSession({
             ...session,
             companyName: data.companyName,
-            companyLogo: data.companyLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${data.companyName || "BOT"}`,
+            companyLogo: logoUrl,
             address: data.address,
             email: data.email,
             phone: data.phone
@@ -69,6 +76,8 @@ function SettingsPage() {
         }
       } catch (error) {
         console.error("Failed to fetch profile", error);
+      } finally {
+        setIsProfileLoading(false);
       }
     };
     fetchProfile();
@@ -81,6 +90,18 @@ function SettingsPage() {
     toast.success("Logged out");
     navigate({ to: "/login" });
   };
+
+  if (isProfileLoading) {
+    return (
+      <div className="space-y-5 max-w-3xl">
+        <PageHeader title="Settings" description="Loading your preferences..." />
+        <SkeletonLoader type="card" count={1} className="h-[400px]" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SkeletonLoader type="card" count={2} className="h-[200px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 max-w-3xl">
@@ -109,9 +130,13 @@ function SettingsPage() {
                 headers: { "Content-Type": "multipart/form-data" }
               });
               
+              const logoUrl = data.companyLogo 
+                ? (data.companyLogo.startsWith("http") ? data.companyLogo : `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${data.companyLogo.startsWith("/") ? "" : "/"}${data.companyLogo}`)
+                : prev.logo;
+
               setCompany(prev => ({
                 ...prev,
-                logo: data.companyLogo || prev.logo
+                logo: logoUrl
               }));
 
               // Update session
@@ -121,7 +146,7 @@ function SettingsPage() {
                   name: data.name,
                   phone: data.phone,
                   companyName: data.companyName,
-                  companyLogo: data.companyLogo || `https://api.dicebear.com/7.x/initials/svg?seed=${data.companyName || "BOT"}`,
+                  companyLogo: logoUrl,
                   address: data.address,
                   email: data.email
                 });
@@ -140,7 +165,18 @@ function SettingsPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-2">
             <div className="relative group">
               <div className="h-24 w-24 rounded-2xl bg-muted grid place-items-center overflow-hidden border-2 border-dashed border-border group-hover:border-primary/40 transition-colors">
-                <img src={company.logo || undefined} alt="Company Logo" className="h-full w-full object-cover" />
+                {company.logo ? (
+                  <img 
+                    src={company.logo} 
+                    alt="Company Logo" 
+                    className="h-full w-full object-cover" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${company.name || "BOT"}`;
+                    }}
+                  />
+                ) : (
+                  <Building2 className="h-8 w-8 text-muted-foreground/20 animate-pulse" />
+                )}
               </div>
               <Button size="icon" variant="secondary" className="absolute -bottom-2 -right-2 h-7 w-7 rounded-full shadow-md border border-border">
                 <Palette className="h-3.5 w-3.5" />

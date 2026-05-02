@@ -27,7 +27,7 @@ import { FormInput } from "@/components/shared/form-input";
 import { FormSelect } from "@/components/shared/form-select";
 import { toast } from "sonner";
 import { cn, formatTime12h } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/shifts")({
   component: ShiftsPage,
@@ -124,16 +124,8 @@ function ShiftsPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Shift Management" description="Define working hours and assign shifts to your team." />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-48 rounded-xl" />
-          ))}
-        </div>
+        <SkeletonLoader type="stats" count={3} />
+        <SkeletonLoader type="card" count={4} />
       </div>
     );
   }
@@ -178,6 +170,10 @@ function ShiftsPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-2">
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} />
+        </div>
+
         <FormInput
           placeholder="Search shifts..."
           icon={Search}
@@ -185,10 +181,6 @@ function ShiftsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} />
-        </div>
       </div>
 
       {/* Grid View */}

@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useDepartmentService, type Department as BackendDept } from "@/services/department-service";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/departments")({
   component: DepartmentsPage,
@@ -83,15 +83,8 @@ function DepartmentsPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Departments" description="Organise teams and manage department branding colors." />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-48 rounded-xl" />
-          ))}
-        </div>
+        <SkeletonLoader type="stats" count={2} />
+        <SkeletonLoader type="card" count={6} />
       </div>
     );
   }
@@ -116,6 +109,13 @@ function DepartmentsPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-2">
+        <div className="flex items-center gap-3">
+          <ViewToggle 
+            view={view} 
+            onViewChange={(v) => setView(v)} 
+          />
+        </div>
+
         <FormInput
           placeholder="Search departments..."
           icon={Search}
@@ -123,13 +123,6 @@ function DepartmentsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle 
-            view={view} 
-            onViewChange={(v) => setView(v)} 
-          />
-        </div>
       </div>
 
       {/* Grid View */}

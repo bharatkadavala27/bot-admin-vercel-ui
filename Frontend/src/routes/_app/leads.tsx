@@ -22,6 +22,7 @@ import { useLeadService, type Lead } from "@/services/lead-service";
 import { cn } from "@/lib/utils";
 import { StatCard } from "@/components/shared/stat-card";
 import { Card } from "@/components/ui/card";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/leads")({
   component: LeadsPage,
@@ -130,6 +131,10 @@ function LeadsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} />
+        </div>
+
         <FormInput
           placeholder="Search by name, email or company..."
           icon={Search}
@@ -137,16 +142,10 @@ function LeadsPage() {
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} />
-        </div>
       </div>
 
       {isLoading ? (
-        <div className="h-64 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-        </div>
+        <SkeletonLoader type="table" count={PAGE_SIZE} />
       ) : (
         <AnimatePresence mode="wait">
           {view === "grid" ? (

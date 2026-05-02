@@ -100,14 +100,6 @@ function LeavesPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search employees..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
           
@@ -129,6 +121,14 @@ function LeavesPage() {
             </TabsList>
           </Tabs>
         </div>
+
+        <FormInput
+          placeholder="Search employees..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">

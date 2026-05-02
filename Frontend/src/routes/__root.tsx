@@ -3,6 +3,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SplashScreen } from "@/components/shared/splash-screen";
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 
@@ -57,7 +59,7 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.ico" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.ico" },
       { rel: "manifest", href: "/manifest.json" },
     ],
@@ -67,6 +69,8 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const { session } = useAuth();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={150}>

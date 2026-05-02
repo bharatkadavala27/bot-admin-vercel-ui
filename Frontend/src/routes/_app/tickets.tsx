@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StatCard } from "@/components/shared/stat-card";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/tickets")({
   component: TicketsPage,
@@ -78,6 +79,16 @@ function TicketsPage() {
     absent: list.filter((t) => t.status === "absent").length,
   };
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Attendance & Logs" description="Monitor daily punch logs and modify login times." />
+        <SkeletonLoader type="stats" count={3} />
+        <SkeletonLoader type="table" count={10} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
       <PageHeader
@@ -102,14 +113,6 @@ function TicketsPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search employee..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
 
@@ -127,6 +130,14 @@ function TicketsPage() {
             </TabsList>
           </Tabs>
         </div>
+
+        <FormInput
+          placeholder="Search employee..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">

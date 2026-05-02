@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useFestivalService, type Festival as BackendFestival } from "@/services/festival-service";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/festivals")({
   component: FestivalsPage,
@@ -123,16 +123,8 @@ function FestivalsPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Festivals & Holidays" description="Manage the company's annual holiday calendar and upcoming events." />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-48 rounded-xl" />
-          ))}
-        </div>
+        <SkeletonLoader type="stats" count={3} />
+        <SkeletonLoader type="card" count={6} />
       </div>
     );
   }
@@ -164,14 +156,6 @@ function FestivalsPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search holidays..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
           
@@ -190,6 +174,14 @@ function FestivalsPage() {
             </Select>
           </div>
         </div>
+
+        <FormInput
+          placeholder="Search holidays..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">

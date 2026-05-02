@@ -18,7 +18,7 @@ import {
   attendanceTrend, salaryDistribution, departmentHeadcount,
 } from "@/lib/mock-data"; // Trends still mock for now
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: DashboardPage,
@@ -57,10 +57,11 @@ function DashboardPage() {
 
   if (isLoading || !summary) {
     return (
-      <div className="space-y-6 animate-pulse">
+      <div className="space-y-6">
         <PageHeader title="Admin Overview" description="Loading real-time metrics..." />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-28 bg-muted/40 rounded-xl" />)}
+        <SkeletonLoader type="stats" count={4} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <SkeletonLoader type="card" count={3} className="lg:col-span-3" />
         </div>
       </div>
     );

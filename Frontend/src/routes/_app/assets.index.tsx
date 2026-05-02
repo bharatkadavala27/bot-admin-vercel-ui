@@ -19,6 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/assets/")({
   component: AssetsPage,
@@ -98,14 +99,6 @@ function AssetsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-2">
-        <FormInput
-          placeholder="Search assets..."
-          icon={Search}
-          className="h-10 w-full md:w-[320px] shadow-none bg-background"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex items-center gap-3">
           <ViewToggle 
             view={view} 
@@ -116,13 +109,22 @@ function AssetsPage() {
             ]}
           />
         </div>
+
+        <FormInput
+          placeholder="Search assets..."
+          icon={Search}
+          className="h-10 w-full md:w-[320px] shadow-none bg-background"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className="h-64 flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-          </div>
+          <>
+            <SkeletonLoader type="stats" count={4} />
+            <SkeletonLoader type="card" count={6} />
+          </>
         ) : view === "employee" ? (
           <motion.div
             key="employee"

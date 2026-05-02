@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useAnnouncementService, type Announcement } from "@/services/announcement-service";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/announcements")({
   component: AnnouncementsPage,
@@ -98,14 +99,6 @@ function AnnouncementsPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
-        <FormInput
-          placeholder="Search notices..."
-          icon={Search}
-          className="h-10 w-full md:w-[260px] shadow-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
         <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
           <ViewToggle view={view} onViewChange={setView} />
           
@@ -123,13 +116,19 @@ function AnnouncementsPage() {
             </SelectContent>
           </Select>
         </div>
+
+        <FormInput
+          placeholder="Search notices..."
+          icon={Search}
+          className="h-10 w-full md:w-[260px] shadow-none"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <motion.div key="loading" className="h-64 flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-          </motion.div>
+          <SkeletonLoader key="loading" type={view === "grid" ? "card" : "table"} count={6} />
         ) : view === "grid" ? (
           <motion.div
             key="grid"

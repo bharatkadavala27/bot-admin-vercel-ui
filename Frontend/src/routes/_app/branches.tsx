@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useBranchService, type Branch as BackendBranch } from "@/services/branch-service";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/branches")({
   component: BranchesPage,
@@ -142,16 +142,8 @@ function BranchesPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Branches" description="All office locations in one place." />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-48 rounded-xl" />
-          ))}
-        </div>
+        <SkeletonLoader type="stats" count={3} />
+        <SkeletonLoader type="card" count={8} />
       </div>
     );
   }
@@ -177,6 +169,10 @@ function BranchesPage() {
 
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 py-1">
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} />
+        </div>
+
         <FormInput
           placeholder="Search branches..."
           icon={Search}
@@ -184,10 +180,6 @@ function BranchesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
-        <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} />
-        </div>
       </div>
 
       {/* Grid / List View */}

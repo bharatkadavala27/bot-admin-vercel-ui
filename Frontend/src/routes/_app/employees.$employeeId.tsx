@@ -49,6 +49,7 @@ import { cn } from "@/lib/utils";
 import { useEmployeeService } from "@/services/employee-service";
 import { useDepartmentService } from "@/services/department-service";
 import { useBranchService } from "@/services/branch-service";
+import { SkeletonLoader } from "@/components/shared/skeleton-loader";
 
 export const Route = createFileRoute("/_app/employees/$employeeId")({
   component: EmployeeDetailsPage,
@@ -57,9 +58,11 @@ export const Route = createFileRoute("/_app/employees/$employeeId")({
 function EmployeeDetailsPage() {
   const [hasMounted, setHasMounted] = useState(false);
   const { employeeId } = useParams({ from: "/_app/employees/$employeeId" });
-  const { employees } = useEmployeeService();
-  const { departments } = useDepartmentService();
-  const { branches } = useBranchService();
+  const { employees, isLoading: empLoading } = useEmployeeService();
+  const { departments, isLoading: deptLoading } = useDepartmentService();
+  const { branches, isLoading: branchLoading } = useBranchService();
+
+  const isLoading = empLoading || deptLoading || branchLoading;
 
   const employee = useMemo(() => employees.find(e => e._id === employeeId), [employees, employeeId]);
   
@@ -79,6 +82,27 @@ function EmployeeDetailsPage() {
   }, []);
 
   if (!hasMounted) return null;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4 px-2">
+          <SkeletonLoader type="card" count={1} className="h-10 w-10 rounded-xl" />
+          <div className="space-y-2 flex-1">
+            <SkeletonLoader type="list" count={1} />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-4 space-y-6">
+            <SkeletonLoader type="card" count={2} />
+          </div>
+          <div className="lg:col-span-8 space-y-6">
+            <SkeletonLoader type="card" count={3} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!employee) {
     return (
